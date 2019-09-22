@@ -340,3 +340,9 @@ func TestNoFormatString(t *testing.T) {
 		}
 	}
 }
+
+func TestColor256(t *testing.T) {
+	col := New256(Fg256(208), Bg256(52)).Add(Underline)
+	col.Println("Prints bright orange underlined text on dark red background.")
+}
+
