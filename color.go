@@ -114,6 +114,16 @@ const (
 	BgHiWhite
 )
 
+// Fg256 returns a foreground color from the 256-color palette
+func Fg256(value int) []Attribute {
+	return []Attribute{(Attribute)(38), (Attribute)(5), (Attribute)(value)}
+}
+
+// Bg256 returns a background color from the 256-color palette
+func Bg256(value int) []Attribute {
+	return []Attribute{(Attribute)(48), (Attribute)(5), (Attribute)(value)}
+}
+
 // New returns a newly created color object.
 func New(value ...Attribute) *Color {
 	c := &Color{
@@ -126,6 +136,11 @@ func New(value ...Attribute) *Color {
 
 	c.Add(value...)
 	return c
+}
+
+// New256 returns a newly created color object.
+func New256(value ...[]Attribute) *Color {
+	return New().Add256(value...)
 }
 
 // Set sets the given parameters immediately. It will change the color of
@@ -190,6 +205,20 @@ func (c *Color) unsetWriter(w io.Writer) {
 func (c *Color) Add(value ...Attribute) *Color {
 	c.params = append(c.params, value...)
 	return c
+}
+
+// Add256 is used to chain 265 color palette parameters.
+func (c *Color) Add256(value ...[]Attribute) *Color {
+	for _, a := range value {
+		c.Add(a...)
+	}
+	return c
+}
+
+func (c *Color) prepend(value Attribute) {
+	c.params = append(c.params, 0)
+	copy(c.params[1:], c.params[0:])
+	c.params[0] = value
 }
 
 // Fprint formats using the default formats for its operands and writes to w.
